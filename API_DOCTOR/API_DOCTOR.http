@@ -1,0 +1,6 @@
+@API_DOCTOR_HostAddress = http://localhost:5065
+
+GET {{API_DOCTOR_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
