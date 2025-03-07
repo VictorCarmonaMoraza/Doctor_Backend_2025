@@ -1,4 +1,5 @@
-﻿using Doctor_Data.DB_Context;
+﻿using API_DOCTOR.Controllers.ControllerBase;
+using Doctor_Data.DB_Context;
 using Doctor_Model.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,9 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_DOCTOR.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserIActionResultController : ControllerBase
+    public class UserIActionResultController : BaseApiController
     {
         private readonly ApplicationDbContext _context;
 

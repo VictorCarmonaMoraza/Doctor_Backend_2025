@@ -1,13 +1,12 @@
-﻿using Doctor_Data.DB_Context;
+﻿using API_DOCTOR.Controllers.ControllerBase;
+using Doctor_Data.DB_Context;
 using Doctor_Model.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_DOCTOR.Controllers
 {
-    [Route("api/[controller]")] // api/user
-    [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseApiController
     {
         private readonly ApplicationDbContext _context;
 
