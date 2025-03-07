@@ -1,8 +1,11 @@
 ﻿using API_DOCTOR.Controllers.ControllerBase;
 using Doctor_Data.DB_Context;
+using Doctor_Model.DTOs;
 using Doctor_Model.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace API_DOCTOR.Controllers
 {
@@ -41,5 +44,45 @@ namespace API_DOCTOR.Controllers
             }
             return Ok(user);
         }
+
+        /// <summary>
+        /// Registra un usaurio en la base de datos
+        /// </summary>
+        /// <param name="registerDto"></param>
+        /// <returns></returns>
+        [HttpPost("register")]
+        public async Task<ActionResult<User>> Register(RegisterDto registerDto)
+        {
+            //Validamos si el usuario existe en la base de datos
+            if (await UserExists(registerDto.UserName))
+            {
+                return BadRequest("Username is taken");
+            }
+            //El usign se utiliza para que libere memoria al final
+            using var hmac = new HMACSHA512();
+            var user = new User
+            {
+                UserName = registerDto.UserName.ToLower(),
+                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+                PasswordSalt = hmac.Key
+            };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        /// <summary>
+        /// Valida si un usuario existe en la base de datos
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        private async Task<bool> UserExists(string username)
+        {
+            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
+        }
+
+
+
+
     }
 }
