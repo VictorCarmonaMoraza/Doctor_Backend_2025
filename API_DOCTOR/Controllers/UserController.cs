@@ -1,6 +1,7 @@
 ﻿using Doctor_Data.DB_Context;
 using Doctor_Model.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API_DOCTOR.Controllers
 {
@@ -20,9 +21,9 @@ namespace API_DOCTOR.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<User> GetUsers2()
+        public async Task<ActionResult<User>> GetUsers2()
         {
-            var users = _context.Users.ToList();
+            var users = await _context.Users.ToListAsync();
             return Ok(users);
         }
 
@@ -32,9 +33,9 @@ namespace API_DOCTOR.Controllers
         /// <param name="id">id del usuario</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<User> GetUser2(int id)
+        public async Task<ActionResult<User>> GetUser2(int id)
         {
-            var user = _context.Users.Find(id);
+            var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound("User not found");
