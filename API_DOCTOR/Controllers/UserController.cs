@@ -3,6 +3,7 @@ using Doctor_Data.DB_Context;
 using Doctor_Data.Interfaces;
 using Doctor_Model.DTOs;
 using Doctor_Model.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -25,6 +26,7 @@ namespace API_DOCTOR.Controllers
         /// Devuelve la lista de usuarios
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<User>> GetUsers2()
         {
@@ -37,6 +39,7 @@ namespace API_DOCTOR.Controllers
         /// </summary>
         /// <param name="id">id del usuario</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser2(int id)
         {

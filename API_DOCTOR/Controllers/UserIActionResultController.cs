@@ -47,7 +47,7 @@ namespace API_DOCTOR.Controllers
         }
 
         /// <summary>
-        /// Registra un usaurio en la base de datos
+        /// Registra un usuario en la base de datos
         /// </summary>
         /// <param name="registerDto"></param>
         /// <returns></returns>
