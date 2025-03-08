@@ -1,5 +1,6 @@
 ﻿using API_DOCTOR.Controllers.ControllerBase;
 using Doctor_Data.DB_Context;
+using Doctor_Data.Interfaces;
 using Doctor_Model.DTOs;
 using Doctor_Model.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace API_DOCTOR.Controllers
     public class UserController : BaseApiController
     {
         private readonly ApplicationDbContext _context;
+        private readonly ITokenService _tokenService;
 
-        public UserController(ApplicationDbContext context)
+        public UserController(ApplicationDbContext context, ITokenService tokenService)
         {
             _context=context;
+            _tokenService=tokenService;
         }
 
         /// <summary>
@@ -51,7 +54,7 @@ namespace API_DOCTOR.Controllers
         /// <param name="registerDto"></param>
         /// <returns></returns>
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             //Validamos si el usuario existe en la base de datos
             if (await UserExists(registerDto.UserName))
@@ -68,7 +71,11 @@ namespace API_DOCTOR.Controllers
             };
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return user;
+            return new UserDto
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
         /// <summary>
@@ -77,7 +84,7 @@ namespace API_DOCTOR.Controllers
         /// <param name="loginDto"></param>
         /// <returns></returns>
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             //Verificar si el usuario existe
             var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.UserName);
@@ -94,7 +101,11 @@ namespace API_DOCTOR.Controllers
                     return Unauthorized("Invalid password");
                 }
             }
-            return user;
+            return new UserDto
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
         /// <summary>
