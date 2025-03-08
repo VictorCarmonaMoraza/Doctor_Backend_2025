@@ -1,4 +1,6 @@
 using Doctor_Data.DB_Context;
+using Doctor_Data.Interfaces;
+using Doctor_Data.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 
 //CORS
 builder.Services.AddCors();
+
+//Agregar servicios
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
