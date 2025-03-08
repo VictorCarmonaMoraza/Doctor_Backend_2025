@@ -72,6 +72,32 @@ namespace API_DOCTOR.Controllers
         }
 
         /// <summary>
+        /// Login de usuario en el sistema
+        /// </summary>
+        /// <param name="loginDto"></param>
+        /// <returns></returns>
+        [HttpPost("login")]
+        public async Task<ActionResult<User>> Login(LoginDto loginDto)
+        {
+            //Verificar si el usuario existe
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.UserName);
+            if (user == null)
+            {
+                return Unauthorized("Invalid username");
+            }
+            using var hmac = new HMACSHA512(user.PasswordSalt);
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+            for (int i = 0; i < computedHash.Length; i++)
+            {
+                if (computedHash[i] != user.PasswordHash[i])
+                {
+                    return Unauthorized("Invalid password");
+                }
+            }
+            return user;
+        }
+
+        /// <summary>
         /// Valida si un usuario existe en la base de datos
         /// </summary>
         /// <param name="username"></param>
